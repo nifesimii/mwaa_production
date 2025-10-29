@@ -1,5 +1,5 @@
 logs/
-fresh_airflow_env
+fresh_airflow_env/
 *.cfg
 *.db
 __pycache__/
