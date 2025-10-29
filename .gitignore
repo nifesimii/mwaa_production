@@ -8,4 +8,4 @@ __pycache__/
 .DS_Store
 .idea/
 webserver_config.py
-airflow-webserver.pid
+*.pid
