@@ -1,4 +1,5 @@
 logs/
+fresh_airflow_env
 *.cfg
 *.db
 __pycache__/
@@ -7,3 +8,4 @@ __pycache__/
 .DS_Store
 .idea/
 webserver_config.py
+airflow-webserver.pid
