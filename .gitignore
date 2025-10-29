@@ -1,5 +1,6 @@
 # Virtual environments
 fresh_airflow_env/
+*.pid
 *.cfg
 *.db
 venv/
@@ -8,7 +9,6 @@ env/
 .DS_Store
 .idea/
 webserver_config.py
-*.pid
 
 
 # Airflow-specific files
