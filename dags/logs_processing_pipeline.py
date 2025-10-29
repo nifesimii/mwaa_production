@@ -135,7 +135,7 @@ def consume_and_index_logs(**context):
 
 # DAG Configuration
 default_args = {
-    'owner': 'Data Mastery Lab',
+    'owner': 'nifesimii',
     'depends_on_past': False,
     'email_on_failure': False,
     'retries': 1,
