@@ -1,11 +1,18 @@
-logs/
+# Virtual environments
 fresh_airflow_env/
 *.cfg
 *.db
-__pycache__/
-*.pyc
+venv/
 .venv/
+env/
 .DS_Store
 .idea/
 webserver_config.py
 *.pid
+
+
+# Airflow-specific files
+airflow.db
+__pycache__/
+*.pyc
+logs/
