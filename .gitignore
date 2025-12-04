@@ -1,5 +1,5 @@
 # Virtual environments
-fresh_airflow_env/
+airflow2_venv/
 *.pid
 *.cfg
 *.db
@@ -9,13 +9,43 @@ env/
 .DS_Store
 .idea/
 webserver_config.py
-
-
-# Airflow-specific files
-airflow.db
-__pycache__/
-*.pyc
-logs/
+ENV/
+.vscode/
 
 
 #just checking
+
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+.Python
+*$py.class
+*.so
+
+# Airflow
+airflow.db
+airflow.cfg
+logs/
+*.log
+unittests.cfg
+
+
+
+cd ~/Documents/git\ projects/MWAAProject
+source airflow2_venv/bin/activate
+pip freeze > requirements.txt
+git add requirements.txt
+git commit -m "Add requirements.txt"
+```
+
+
+
+# AWS
+.aws/
+
+
+# Data
+*.csv
+*.parquet
