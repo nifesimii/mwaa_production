@@ -1,6 +1,5 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-# from airflow.operators.python import PythonOperator
 from airflow.operators.python import PythonOperator  # type: ignore
 from confluent_kafka import Producer
 import json
@@ -101,19 +100,19 @@ default_args = {
     'retry_delay': timedelta(seconds=5),
 }
 
-# dag = DAG(
-#     'log_generation_pipeline',
-#     default_args=default_args,
-#     description='Generate and produce synthetic logs',
-#     schedule_interval='*/2 * * * *',  # fixed from schedule -> schedule_interval
-#     start_date=datetime(2025, 1, 26),
-#     catchup=False,
-#     tags=['logs', 'kafka', 'production']
-# )
-#
-# produce_logs_task = PythonOperator(
-#     task_id='generate_and_produce_logs',
-#     python_callable=produce_logs,
-#     dag=dag,
-# )
-produce_logs()
+dag = DAG(
+    'log_generation_pipeline',
+    default_args=default_args,
+    description='Generate and produce synthetic logs',
+    schedule_interval='*/2 * * * *',  # fixed from schedule -> schedule_interval
+    start_date=datetime(2025, 1, 26),
+    catchup=False,
+    tags=['logs', 'kafka', 'production']
+)
+
+produce_logs_task = PythonOperator(
+    task_id='generate_and_produce_logs',
+    python_callable=produce_logs,
+    dag=dag,
+)
+# produce_logs()

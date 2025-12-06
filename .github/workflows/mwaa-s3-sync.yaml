@@ -1,4 +1,4 @@
-name: S3 Synchronisation
+name: Deploy to MWAA
 
 on:
   push:
@@ -9,16 +9,25 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - uses: jakejarvis/s3-sync-action@master
+      - uses: actions/checkout@v3
+
+      # Deploy DAGs to correct location
+      - name: Sync DAGs to S3
+        uses: jakejarvis/s3-sync-action@master
         with:
-          args: --exclude '.git/*' --exclude '.github/*' --exclude '.gitignore' --exclude '.gitattributes'
+          args: --delete --exclude '*' --include 'dags/*.py'
         env:
           AWS_S3_BUCKET: kafka-mwaa-bucket
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: 'us-east-1'
-          DEST_DIR: test-public
+          DEST_DIR: 'dags'  # Changed from 'test-public'
 
-          
-
+      # Deploy requirements.txt
+      - name: Upload requirements
+        run: |
+          aws s3 cp requirements.txt s3://kafka-mwaa-bucket/requirements.txt
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'

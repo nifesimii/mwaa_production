@@ -33,12 +33,7 @@ unittests.cfg
 
 
 
-cd ~/Documents/git\ projects/MWAAProject
-source airflow2_venv/bin/activate
-pip freeze > requirements.txt
-git add requirements.txt
-git commit -m "Add requirements.txt"
-```
+\
 
 
 

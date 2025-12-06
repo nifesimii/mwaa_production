@@ -134,30 +134,30 @@ def consume_and_index_logs(**context):
 
 
 # DAG Configuration
-# default_args = {
-#     'owner': 'nifesimii',
-#     'depends_on_past': False,
-#     'email_on_failure': False,
-#     'retries': 1,
-#     'retry_delay': timedelta(seconds=5),
-# }
-#
-# dag = DAG(
-#     'log_consumer_pipeline',
-#     default_args=default_args,
-#     description='Consume logs from Kafka and index to Elasticsearch',
-#     schedule='*/2 * * * *',
-#     start_date=datetime(2024, 1, 25),
-#     catchup=False,
-#     tags=['logs', 'kafka', 'elasticsearch']
-# )
-#
-# consume_logs_task = PythonOperator(
-#     task_id='consume_and_index_logs',
-#     python_callable=consume_and_index_logs,
-#     dag=dag,
-# )
+default_args = {
+    'owner': 'nifesimii',
+    'depends_on_past': False,
+    'email_on_failure': False,
+    'retries': 1,
+    'retry_delay': timedelta(seconds=5),
+}
+
+dag = DAG(
+    'log_consumer_pipeline',
+    default_args=default_args,
+    description='Consume logs from Kafka and index to Elasticsearch',
+    schedule='*/2 * * * *',
+    start_date=datetime(2024, 1, 25),
+    catchup=False,
+    tags=['logs', 'kafka', 'elasticsearch']
+)
+
+consume_logs_task = PythonOperator(
+    task_id='consume_and_index_logs',
+    python_callable=consume_and_index_logs,
+    dag=dag,
+)
 
 # Define task dependencies
-# consume_logs_task
-consume_and_index_logs()
+consume_logs_task
+# consume_and_index_logs()

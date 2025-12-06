@@ -1,5 +1,4 @@
-# Kafka client
 confluent-kafka==2.8.2
-
-# Elasticsearch client  
 elasticsearch==8.17.1
+Faker==35.0.0
+apache-airflow[amazon]==3.0.6
