@@ -1,4 +1,3 @@
-confluent-kafka==2.8.2
-elasticsearch==8.17.1
-Faker==35.0.0
-apache-airflow[amazon]==3.0.6
+confluent-kafka>=2.5.0
+elasticsearch>=8.0.0
+Faker>=20.0.0

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.python import PythonOperator  # type: ignore
+from airflow.operators.python import PythonOperator   #type: ignore
 from confluent_kafka import Consumer, KafkaException
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
@@ -57,7 +57,7 @@ def consume_and_index_logs(**context):
         "sasl.username": secrets['KAFKA_SASL_USERNAME'],
         "sasl.password": secrets['KAFKA_SASL_PASSWORD'],
         "group.id": "airflow_log_indexer",
-        "auto.offset.reset": "latest"  # Updated to process only latest messages
+        "auto.offset.reset": "latest"
     }
 
     # Elasticsearch configuration
@@ -133,20 +133,21 @@ def consume_and_index_logs(**context):
         es.close()
 
 
-# DAG Configuration
+# DAG Configuration - Airflow 3.0 syntax
 default_args = {
-    'owner': 'nifesimii',
+    'owner': 'Data Mastery Lab',
     'depends_on_past': False,
     'email_on_failure': False,
     'retries': 1,
     'retry_delay': timedelta(seconds=5),
 }
 
+# Note: 'schedule' not 'schedule_interval' in Airflow 3.0
 dag = DAG(
     'log_consumer_pipeline',
     default_args=default_args,
     description='Consume logs from Kafka and index to Elasticsearch',
-    schedule='*/2 * * * *',
+    schedule='*/2 * * * *',  # Airflow 3.0: use 'schedule' not 'schedule_interval'
     start_date=datetime(2024, 1, 25),
     catchup=False,
     tags=['logs', 'kafka', 'elasticsearch']
@@ -157,7 +158,3 @@ consume_logs_task = PythonOperator(
     python_callable=consume_and_index_logs,
     dag=dag,
 )
-
-# Define task dependencies
-consume_logs_task
-# consume_and_index_logs()

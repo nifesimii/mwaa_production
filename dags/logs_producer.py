@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.operators.python import PythonOperator  # type: ignore
+from airflow.operators.python import PythonOperator   #type: ignore
 from confluent_kafka import Producer
 import json
 import random
@@ -11,7 +11,7 @@ from faker import Faker
 fake = Faker()
 logger = logging.getLogger(__name__)
 
-#
+
 def get_secret(secret_name, region_name="us-east-1"):
     """Retrieve secrets from AWS Secrets Manager."""
     session = boto3.session.Session()
@@ -22,11 +22,6 @@ def get_secret(secret_name, region_name="us-east-1"):
     except Exception as e:
         logger.error(f"Secret retrieval error: {e}")
         raise
-
-
-def create_kafka_producer(config):
-    """Create Kafka producer with configuration."""
-    return Producer(config)
 
 
 def generate_log():
@@ -58,15 +53,17 @@ def generate_log():
 
 
 def delivery_report(err, msg):
-    """Called once for each message produced to indicate delivery result."""
+    """Delivery callback."""
     if err is not None:
         logger.error(f"Message delivery failed: {err}")
     else:
-        logger.info(f"Message delivered to {msg.topic()} [{msg.partition()}]")
+        logger.info(f"Message delivered to {msg.topic()}")
+
 
 def produce_logs(**context):
     """Produce log entries to Kafka."""
     secrets = get_secret("MWAA_Secrets_V1")
+
     kafka_config = {
         "bootstrap.servers": secrets['KAFKA_BOOTSTRAP_SERVER'],
         "security.protocol": "SASL_SSL",
@@ -76,7 +73,7 @@ def produce_logs(**context):
         'session.timeout.ms': 50000
     }
 
-    producer = create_kafka_producer(kafka_config)
+    producer = Producer(kafka_config)
     topic = 'billion_website_logs'
 
     for _ in range(1000):
@@ -90,21 +87,21 @@ def produce_logs(**context):
     logger.info(f"Produced 1,000 logs to topic {topic}")
 
 
-
-# DAG Configuration
+# DAG Configuration - Airflow 3.0 syntax
 default_args = {
-    'owner': 'nifesimii',
+    'owner': 'Data Mastery Lab',
     'depends_on_past': False,
     'email_on_failure': False,
     'retries': 1,
     'retry_delay': timedelta(seconds=5),
 }
 
+# Note: 'schedule' not 'schedule_interval' in Airflow 3.0
 dag = DAG(
     'log_generation_pipeline',
     default_args=default_args,
     description='Generate and produce synthetic logs',
-    schedule_interval='*/2 * * * *',  # fixed from schedule -> schedule_interval
+    schedule='*/2 * * * *',  # Airflow 3.0: use 'schedule' not 'schedule_interval'
     start_date=datetime(2025, 1, 26),
     catchup=False,
     tags=['logs', 'kafka', 'production']
@@ -115,4 +112,3 @@ produce_logs_task = PythonOperator(
     python_callable=produce_logs,
     dag=dag,
 )
-# produce_logs()
